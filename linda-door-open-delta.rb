@@ -6,13 +6,14 @@ $stdout.sync = true
 ENV['LINDA_BASE']  ||= 'http://node-linda-base.herokuapp.com'
 ENV['LINDA_SPACE'] ||= 'test'
 
-# arduino = ArduinoFirmata.connect ENV['ARDUINO']
+arduino = ArduinoFirmata.connect ENV['ARDUINO']
 
 linda = Linda::SocketIO::Client.connect ENV['LINDA_BASE']
 ts = linda.tuplespace(ENV['LINDA_SPACE'])
 
 linda.io.on :connect do
   puts "connect!! <#{linda.url}/#{ts.name}>"
+  puts " => #{linda.url}/#{ts.name}?type=door"
   last_at = Time.now
   ts.watch :type => :door, :cmd => :open do |err, tuple|
     next if err
